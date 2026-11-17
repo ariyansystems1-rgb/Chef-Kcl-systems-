@@ -9,6 +9,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
+        /* Hide Netlify Badge permanently if injected */
+        iframe#netlify-badge, div.netlify-badge { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
@@ -25,7 +27,7 @@
             
             <div class="text-center space-y-3 relative z-10">
                 <div class="inline-flex items-center justify-center bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 w-16 h-16 rounded-2xl font-black text-2xl shadow-lg shadow-amber-500/20">
-                    <i class="fa-solid fa-hat-chef"></i>
+                    <i class="fa-solid fa-utensils"></i>
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold tracking-tight text-white">AURUM</h2>
@@ -54,10 +56,6 @@
                     Access Securely <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>
             </form>
-
-            <div class="text-center pt-2 border-t border-slate-800/80 relative z-10">
-                <p class="text-[11px] text-slate-500">© AURUM Systems • Managed by Head Chef Ariyan</p>
-            </div>
         </div>
     </div>
 
@@ -68,7 +66,7 @@
             <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
                 <div class="flex items-center space-x-3">
                     <div class="bg-amber-500 text-slate-950 p-2.5 rounded-xl font-black text-xl shadow-inner">
-                        <i class="fa-solid fa-hat-chef"></i>
+                        <i class="fa-solid fa-utensils"></i>
                     </div>
                     <div>
                         <h1 class="text-xl font-bold tracking-tight text-white">AURUM Kitchen Intelligence</h1>
@@ -82,6 +80,7 @@
                         <button onclick="switchTab('tab-subrecipes')" id="btn-tab-subrecipes" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white">2. Sub-Recipes</button>
                         <button onclick="switchTab('tab-final')" id="btn-tab-final" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white">3. Final Menu</button>
                         <button onclick="switchTab('tab-report')" id="btn-tab-report" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white">4. A4 Report</button>
+                        <button onclick="switchTab('tab-admin')" id="btn-tab-admin" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-amber-400 hover:text-amber-300 border border-amber-500/30"><i class="fa-solid fa-shield-halved mr-1"></i> Admin Panel</button>
                     </nav>
                     <button onclick="handleLogout()" title="Logout" class="bg-slate-800 hover:bg-red-600/20 hover:text-red-400 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold transition border border-slate-700">
                         <i class="fa-solid fa-right-from-bracket"></i>
@@ -97,7 +96,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800">
                     <div>
                         <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-database text-amber-400 mr-2"></i> Master Ingredients Calorie Database</h2>
-                        <p class="text-xs text-slate-400">প্রতি ১০০ গ্রাম বা মিলিলিটারে ক্যালোরি মান এখানে সেভ থাকবে।</p>
+                        <p class="text-xs text-slate-400">Manage standard calorie values per 100g or 100ml for all raw ingredients.</p>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="addIngredientRow()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-plus mr-1"></i> Add Ingredient</button>
@@ -129,7 +128,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800">
                     <div>
                         <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-layer-group text-amber-400 mr-2"></i> Sub-Recipe Studio</h2>
-                        <p class="text-xs text-slate-400">সাব-রেসিপির উপাদান এবং বেক করার পর ফাইনাল ওজন দিন।</p>
+                        <p class="text-xs text-slate-400">Configure sub-recipes, track total raw weights, and final baked weights.</p>
                     </div>
                     <button onclick="addSubRecipeModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-plus mr-1"></i> New Sub-Recipe</button>
                 </div>
@@ -149,7 +148,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800">
                     <div>
                         <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-bowl-food text-amber-400 mr-2"></i> Final Menu Calculator</h2>
-                        <p class="text-xs text-slate-400">ফাইনাল মেনু আইটেম তৈরি করুন এবং ১ পিসের নিখুঁত ক্যালোরি বের করুন।</p>
+                        <p class="text-xs text-slate-400">Combine ingredients or sub-recipes to calculate precise nutritional values per serving.</p>
                     </div>
                     <button onclick="addFinalMenuModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-plus mr-1"></i> New Final Dish</button>
                 </div>
@@ -162,7 +161,7 @@
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 no-print">
                     <div>
                         <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-print text-amber-400 mr-2"></i> Executive A4 Report & Backup</h2>
-                        <p class="text-xs text-slate-400">ম্যানেজমেন্টের জন্য প্রিন্ট-রেডি এ-ফোর শিট এবং ডেটা ব্যাকআপ বা রিস্টোর করুন।</p>
+                        <p class="text-xs text-slate-400">Print-ready specification sheets and full database backup / restore options.</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-print mr-1"></i> Print A4 Report</button>
@@ -213,6 +212,32 @@
                     </div>
                 </div>
             </section>
+
+            <!-- TAB 5: Admin Panel (Staff & Password Manager) -->
+            <section id="tab-admin" class="space-y-4 hidden">
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-users-gear text-amber-400 mr-2"></i> Staff Access & Password Manager</h2>
+                            <p class="text-xs text-slate-400">Create new staff accounts, manage credentials, or remove access securely.</p>
+                        </div>
+                        <button onclick="addStaffAccount()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-user-plus mr-1"></i> Add New Staff</button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800/50 text-slate-300 text-xs uppercase tracking-wider border-b border-slate-800">
+                                    <th class="p-3">Staff ID / Username</th>
+                                    <th class="p-3">Password</th>
+                                    <th class="p-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 text-sm" id="staff-table-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -251,13 +276,14 @@
 
     <!-- Script Logic -->
     <script>
-        // Flexible Staff Credentials Database (এখানে তুমি পরে তোমার ইচ্ছেমতো আইডি-পাসওয়ার্ড বসাতে পারবে)
-        const staffUsers = {
-            "chef_ariyan": "aurum2026",
-            "staff_01": "pass01",
-            "staff_02": "pass02",
-            "staff_03": "pass03"
+        let staffUsers = JSON.parse(localStorage.getItem('aurum_staff_db')) || {
+            "chef_ariyan": "aurum2026"
         };
+
+        function saveStaffDB() {
+            localStorage.setItem('aurum_staff_db', JSON.stringify(staffUsers));
+            renderStaffTable();
+        }
 
         function handleLogin(e) {
             e.preventDefault();
@@ -308,19 +334,86 @@
         }
 
         function switchTab(tabId) {
-            ['tab-ingredients', 'tab-subrecipes', 'tab-final', 'tab-report'].forEach(id => {
+            ['tab-ingredients', 'tab-subrecipes', 'tab-final', 'tab-report', 'tab-admin'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
-            ['btn-tab-ingredients', 'btn-tab-subrecipes', 'btn-tab-final', 'btn-tab-report'].forEach(id => {
-                document.getElementById(id).className = "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white bg-slate-950";
+            ['btn-tab-ingredients', 'btn-tab-subrecipes', 'btn-tab-final', 'btn-tab-report', 'btn-tab-admin'].forEach(id => {
+                const el = document.getElementById(id);
+                if(id === 'btn-tab-admin') {
+                    el.className = "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-amber-400 hover:text-amber-300 border border-amber-500/30 bg-slate-950";
+                } else {
+                    el.className = "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white bg-slate-950";
+                }
             });
             document.getElementById(tabId).classList.remove('hidden');
-            document.getElementById('btn-' + tabId).className = "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all bg-amber-500 text-slate-950 shadow";
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all bg-amber-500 text-slate-950 shadow";
             renderAll();
+        }
+
+        function renderStaffTable() {
+            const tbody = document.getElementById('staff-table-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            Object.keys(staffUsers).forEach(username => {
+                const password = staffUsers[username];
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/30 transition border-b border-slate-800/50">
+                        <td class="p-3"><input type="text" value="${username}" onchange="updateStaffUsername('${username}', this.value)" class="bg-transparent w-full focus:outline-none text-white font-medium"></td>
+                        <td class="p-3"><input type="text" value="${password}" onchange="updateStaffPassword('${username}', this.value)" class="bg-slate-950 border border-slate-800 rounded px-2 py-1 w-full text-amber-400 font-bold"></td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteStaff('${username}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function addStaffAccount() {
+            const newId = prompt("Enter new Staff ID / Username:");
+            if(!newId) return;
+            const cleanId = newId.trim().toLowerCase();
+            if(staffUsers[cleanId]) {
+                alert("This Staff ID already exists!");
+                return;
+            }
+            const newPass = prompt("Enter password for " + cleanId + ":", "pass123");
+            if(!newPass) return;
+
+            staffUsers[cleanId] = newPass.trim();
+            saveStaffDB();
+            alert("Staff account created successfully!");
+        }
+
+        function updateStaffUsername(oldKey, newKey) {
+            const cleanKey = newKey.trim().toLowerCase();
+            if(!cleanKey) return;
+            if(staffUsers[cleanKey]) { alert("Username already exists!"); renderStaffTable(); return; }
+            staffUsers[cleanKey] = staffUsers[oldKey];
+            delete staffUsers[oldKey];
+            saveStaffDB();
+        }
+
+        function updateStaffPassword(username, newPass) {
+            staffUsers[username] = newPass.trim();
+            saveStaffDB();
+        }
+
+        function deleteStaff(username) {
+            if(Object.keys(staffUsers).length <= 1) {
+                alert("You cannot delete the last remaining account!");
+                return;
+            }
+            if(confirm("Are you sure you want to delete staff: " + username + "?")) {
+                delete staffUsers[username];
+                saveStaffDB();
+            }
         }
 
         function renderIngredients() {
             const tbody = document.getElementById('ingredients-tbody');
+            if(!tbody) return;
             tbody.innerHTML = '';
             ingredients.forEach((ing, index) => {
                 tbody.innerHTML += `
@@ -355,6 +448,7 @@
             currentSubFilter = sec;
             ['All', 'Bakery', 'Pastry', 'Breakfast'].forEach(s => {
                 const btn = document.getElementById('sub-filter-' + s);
+                if(!btn) return;
                 if(s === sec) btn.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 transition";
                 else btn.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:bg-slate-800 transition";
             });
@@ -363,6 +457,7 @@
 
         function renderSubRecipes() {
             const grid = document.getElementById('subrecipes-grid');
+            if(!grid) return;
             grid.innerHTML = '';
             
             subRecipes.forEach((sub, sIdx) => {
@@ -491,6 +586,7 @@
 
         function renderFinalMenu() {
             const container = document.getElementById('finalmenu-container');
+            if(!container) return;
             container.innerHTML = '';
 
             finalMenus.forEach((menu, mIdx) => {
@@ -609,8 +705,10 @@
         }
 
         function renderA4Report() {
-            document.getElementById('report-date').innerText = new Date().toLocaleDateString();
+            const dateEl = document.getElementById('report-date');
+            if(dateEl) dateEl.innerText = new Date().toLocaleDateString();
             const tbody = document.getElementById('a4-table-body');
+            if(!tbody) return;
             tbody.innerHTML = '';
 
             finalMenus.forEach(menu => {
@@ -651,7 +749,7 @@
         }
 
         function exportJSON() {
-            const data = { ingredients, subRecipes, finalMenus };
+            const data = { ingredients, subRecipes, finalMenus, staffUsers };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -670,6 +768,10 @@
                     if(data.ingredients) ingredients = data.ingredients;
                     if(data.subRecipes) subRecipes = data.subRecipes;
                     if(data.finalMenus) finalMenus = data.finalMenus;
+                    if(data.staffUsers) {
+                        staffUsers = data.staffUsers;
+                        saveStaffDB();
+                    }
                     saveData();
                     alert("Data Restored Successfully!");
                 } catch(err) {
@@ -684,6 +786,7 @@
             renderSubRecipes();
             renderFinalMenu();
             renderA4Report();
+            renderStaffTable();
         }
     </script>
 </body>
