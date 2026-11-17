@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Calorie & Recipe Studio | Dessert Rebels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .print-container { box-shadow: none !important; border: none !important; padding: 0 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 px-4 py-3 shadow-md no-print">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-500 text-slate-900 p-2.5 rounded-xl font-black text-xl shadow-inner">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">Dessert Rebels Kitchen</h1>
+                    <p class="text-xs text-amber-400 font-medium">Professional Calorie & Recipe Studio</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <nav class="flex flex-wrap gap-1 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
+                <button onclick="switchTab('tab-ingredients')" id="btn-tab-ingredients" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all bg-amber-500 text-slate-900 shadow">1. Ingredients DB</button>
+                <button onclick="switchTab('tab-subrecipes')" id="btn-tab-subrecipes" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white">2. Sub-Recipes</button>
+                <button onclick="switchTab('tab-final')" id="btn-tab-final" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white">3. Final Menu</button>
+                <button onclick="switchTab('tab-report')" id="btn-tab-report" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white">4. A4 Report & Backup</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+        <!-- TAB 1: Ingredients DB -->
+        <section id="tab-ingredients" class="space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                <div>
+                    <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-database text-amber-400 mr-2"></i> Master Ingredients Calorie Database</h2>
+                    <p class="text-xs text-slate-400">প্রতি ১০০ গ্রাম বা মিলিলিটারে ক্যালোরি মান এখানে সেভ থাকবে। স্টাফরা এখান থেকে চেক করে নিতে পারবে।</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="addIngredientRow()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-plus mr-1"></i> Add Ingredient</button>
+                    <button onclick="saveIngredients()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-save mr-1"></i> Save DB</button>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="ingredients-table">
+                        <thead>
+                            <tr class="bg-slate-700/50 text-slate-300 text-xs uppercase tracking-wider border-b border-slate-700">
+                                <th class="p-3">Ingredient Name</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3">Unit</th>
+                                <th class="p-3">Cal / 100g (ml)</th>
+                                <th class="p-3">Notes / Brand</th>
+                                <th class="p-3 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700 text-sm" id="ingredients-tbody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Sub-Recipes Builder -->
+        <section id="tab-subrecipes" class="space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                <div>
+                    <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-layer-group text-amber-400 mr-2"></i> Sub-Recipe Studio (Bakery, Pastry, Breakfast)</h2>
+                    <p class="text-xs text-slate-400">সাব-রেসিপির উপাদান যুক্ত করুন। বেক করার পর ওজন কমে গেলে 'Baked Wt' ঘরে ফাইনাল ওজন দিন।</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="addSubRecipeModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-plus mr-1"></i> New Sub-Recipe</button>
+                </div>
+            </div>
+
+            <!-- Section Filter Tabs -->
+            <div class="flex gap-2">
+                <button onclick="filterSubSection('All')" id="sub-filter-All" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-900 transition">All Sections</button>
+                <button onclick="filterSubSection('Bakery')" id="sub-filter-Bakery" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Bakery</button>
+                <button onclick="filterSubSection('Pastry')" id="sub-filter-Pastry" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Pastry</button>
+                <button onclick="filterSubSection('Breakfast')" id="sub-filter-Breakfast" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Breakfast</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="subrecipes-grid">
+                <!-- Cards populated via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 3: Final Menu Calculator -->
+        <section id="tab-final" class="space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                <div>
+                    <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-bowl-food text-amber-400 mr-2"></i> Final Menu Plated Calculator</h2>
+                    <p class="text-xs text-slate-400">ফাইনাল মেনু আইটেম (যেমন ক্রসাঁ বা কেক) তৈরি করুন এবং ১ পিসের নিখুঁত ক্যালোরি বের করুন।</p>
+                </div>
+                <button onclick="addFinalMenuModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-plus mr-1"></i> New Final Dish</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="finalmenu-container">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 4: A4 Report & Backup -->
+        <section id="tab-report" class="space-y-4 hidden">
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-4 no-print">
+                <div>
+                    <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-print text-amber-400 mr-2"></i> Company A4 Executive Report & Backup</h2>
+                    <p class="text-xs text-slate-400">ম্যানেজমেন্টের জন্য প্রিন্ট-রেডি এ-ফোর শিট এবং সম্পূর্ণ ডেটা ব্যাকআপ বা রিস্টোর করুন।</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-print mr-1"></i> Print A4 Report</button>
+                    <button onclick="exportJSON()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow"><i class="fa-solid fa-download mr-1"></i> Full JSON Backup</button>
+                    <label class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow cursor-pointer">
+                        <i class="fa-solid fa-upload mr-1"></i> Restore JSON <input type="file" onchange="importJSON(event)" class="hidden" accept=".json">
+                    </label>
+                </div>
+            </div>
+
+            <!-- A4 Printable Report Area -->
+            <div id="a4-report-area" class="bg-white text-slate-900 p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto space-y-6 print-container">
+                <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-end">
+                    <div>
+                        <h1 class="text-2xl font-black uppercase tracking-wider text-slate-900">Dessert Rebels Kitchen</h1>
+                        <p class="text-sm font-semibold text-slate-600">Official Calorie & Nutritional Specification Report</p>
+                    </div>
+                    <div class="text-right text-xs text-slate-500">
+                        <p>Date: <span id="report-date"></span></p>
+                        <p>Prepared by: Head Chef Ariyan Ahmed</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-base text-slate-800 mb-2 border-b border-slate-200 pb-1">Final Menu Items Summary</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 uppercase">
+                                    <th class="p-2 border border-slate-300">Menu Item Name</th>
+                                    <th class="p-2 border border-slate-300">Section</th>
+                                    <th class="p-2 border border-slate-300 text-right">Total Weight (g)</th>
+                                    <th class="p-2 border border-slate-300 text-right">Cal / 100g</th>
+                                    <th class="p-2 border border-slate-300 text-right">Calories / 1 Piece</th>
+                                </tr>
+                            </thead>
+                            <tbody id="a4-table-body">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pt-8 grid grid-cols-2 gap-8 text-xs text-slate-700">
+                    <div class="border-t border-slate-400 pt-2">
+                        <p class="font-bold">Prepared By:</p>
+                        <p>Head Chef Signature</p>
+                    </div>
+                    <div class="border-t border-slate-400 pt-2 text-right">
+                        <p class="font-bold">Approved By:</p>
+                        <p>Kitchen Management / Owner</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modals for Adding Sub-Recipe -->
+    <div id="modal-sub" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 space-y-4">
+            <h3 class="text-lg font-bold text-white" id="modal-sub-title">Add Sub-Recipe</h3>
+            <div>
+                <label class="text-xs text-slate-400 font-medium">Sub-Recipe Name</label>
+                <input type="text" id="sub-name-input" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white mt-1" placeholder="e.g. Croissant Dough">
+            </div>
+            <div>
+                <label class="text-xs text-slate-400 font-medium">Section</label>
+                <select id="sub-section-input" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white mt-1">
+                    <option value="Bakery">Bakery</option>
+                    <option value="Pastry">Pastry</option>
+                    <option value="Breakfast">Breakfast</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-xs text-slate-400 font-medium">Final Baked Wt (g)</label>
+                    <input type="number" id="sub-baked-input" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white mt-1" placeholder="Optional">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-medium">Total Pieces</label>
+                    <input type="number" id="sub-pieces-input" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white mt-1" value="1">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-sub')" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Cancel</button>
+                <button onclick="saveSubRecipeHeader()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-xl text-xs font-bold">Save & Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        let ingredients = JSON.parse(localStorage.getItem('dr_ingredients')) || [
+            { name: "Caputo Flour (00)", category: "Dry", unit: "g", cal: 352, notes: "Italian Flour" },
+            { name: "Sugar (White Granulated)", category: "Sweetener", unit: "g", cal: 387, notes: "Standard" },
+            { name: "Unsalted Butter", category: "Dairy", unit: "g", cal: 717, notes: "82% Fat" },
+            { name: "Almarai Milk Full Fat", category: "Dairy", unit: "ml", cal: 58, notes: "Fresh Milk" },
+            { name: "Whipping Cream 35%", category: "Dairy", unit: "ml", cal: 336, notes: "Heavy Cream" },
+            { name: "Whole Egg", category: "Egg", unit: "g", cal: 143, notes: "Shelled" },
+            { name: "Dark Chocolate 70%", category: "Chocolate", unit: "g", cal: 598, notes: "Couverture" },
+            { name: "Fresh Yeast", category: "Bakery", unit: "g", cal: 105, notes: "Compressed" },
+            { name: "Salt", category: "Seasoning", unit: "g", cal: 0, notes: "Table Salt" }
+        ];
+
+        let subRecipes = JSON.parse(localStorage.getItem('dr_subrecipes')) || [
+            { 
+                name: "Croissant Dough", section: "Bakery", bakedWeight: 870, pieces: 10,
+                items: [
+                    { ingredient: "Caputo Flour (00)", qty: 500 },
+                    { ingredient: "Unsalted Butter", qty: 250 },
+                    { ingredient: "Almarai Milk Full Fat", qty: 150 },
+                    { ingredient: "Sugar (White Granulated)", qty: 60 },
+                    { ingredient: "Fresh Yeast", qty: 20 },
+                    { ingredient: "Salt", qty: 10 }
+                ]
+            }
+        ];
+
+        let finalMenus = JSON.parse(localStorage.getItem('dr_finalmenus')) || [
+            {
+                name: "Chocolate Caramel Croissant", section: "Bakery",
+                items: [
+                    { type: "Sub-Recipe", name: "Croissant Dough", qty: 87 }
+                ]
+            }
+        ];
+
+        let currentSubFilter = 'All';
+
+        function saveData() {
+            localStorage.setItem('dr_ingredients', JSON.stringify(ingredients));
+            localStorage.setItem('dr_subrecipes', JSON.stringify(subRecipes));
+            localStorage.setItem('dr_finalmenus', JSON.stringify(finalMenus));
+            renderAll();
+        }
+
+        function switchTab(tabId) {
+            ['tab-ingredients', 'tab-subrecipes', 'tab-final', 'tab-report'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            ['btn-tab-ingredients', 'btn-tab-subrecipes', 'btn-tab-final', 'btn-tab-report'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white bg-slate-900";
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all bg-amber-500 text-slate-900 shadow";
+            renderAll();
+        }
+
+        function renderIngredients() {
+            const tbody = document.getElementById('ingredients-tbody');
+            tbody.innerHTML = '';
+            ingredients.forEach((ing, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-700/30 transition border-b border-slate-700/50">
+                        <td class="p-3"><input type="text" value="${ing.name}" onchange="ingredients[${index}].name = this.value" class="bg-transparent w-full focus:outline-none text-white font-medium"></td>
+                        <td class="p-3"><input type="text" value="${ing.category}" onchange="ingredients[${index}].category = this.value" class="bg-transparent w-full focus:outline-none text-slate-300"></td>
+                        <td class="p-3"><input type="text" value="${ing.unit}" onchange="ingredients[${index}].unit = this.value" class="bg-transparent w-16 text-center focus:outline-none text-slate-300"></td>
+                        <td class="p-3"><input type="number" value="${ing.cal}" onchange="ingredients[${index}].cal = parseFloat(this.value)||0" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 w-24 text-amber-400 font-bold"></td>
+                        <td class="p-3"><input type="text" value="${ing.notes}" onchange="ingredients[${index}].notes = this.value" class="bg-transparent w-full focus:outline-none text-slate-400"></td>
+                        <td class="p-3 text-center"><button onclick="deleteIngredient(${index})" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function addIngredientRow() {
+            ingredients.push({ name: "New Ingredient", category: "General", unit: "g", cal: 100, notes: "" });
+            renderIngredients();
+        }
+
+        function deleteIngredient(index) {
+            ingredients.splice(index, 1);
+            saveData();
+        }
+
+        function saveIngredients() {
+            saveData();
+            alert("Ingredients Database Saved Successfully!");
+        }
+
+        function filterSubSection(sec) {
+            currentSubFilter = sec;
+            ['All', 'Bakery', 'Pastry', 'Breakfast'].forEach(s => {
+                const btn = document.getElementById('sub-filter-' + s);
+                if(s === sec) btn.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-900 transition";
+                else btn.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+            });
+            renderSubRecipes();
+        }
+
+        function renderSubRecipes() {
+            const grid = document.getElementById('subrecipes-grid');
+            grid.innerHTML = '';
+            
+            subRecipes.forEach((sub, sIdx) => {
+                if(currentSubFilter !== 'All' && sub.section !== currentSubFilter) return;
+
+                let rawWt = 0, rawCal = 0;
+                sub.items.forEach(item => {
+                    rawWt += item.qty;
+                    const ing = ingredients.find(i => i.name === item.ingredient);
+                    rawCal += (item.qty / 100) * (ing ? ing.cal : 0);
+                });
+
+                const finalWt = sub.bakedWeight > 0 ? sub.bakedWeight : rawWt;
+                const cal100Final = finalWt > 0 ? (rawCal / finalWt) * 100 : 0;
+                const calPerPiece = sub.pieces > 0 ? rawCal / sub.pieces : rawCal;
+
+                let itemsHtml = '';
+                sub.items.forEach((item, iIdx) => {
+                    itemsHtml += `
+                        <div class="flex justify-between items-center text-xs py-1 border-b border-slate-700/50">
+                            <span class="text-slate-300">${item.ingredient}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-amber-400 font-semibold">${item.qty}g</span>
+                                <button onclick="deleteSubItem(${sIdx}, ${iIdx})" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                grid.innerHTML += `
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 shadow-xl flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">${sub.section}</span>
+                                    <h3 class="text-base font-bold text-white mt-1">${sub.name}</h3>
+                                </div>
+                                <button onclick="deleteSubRecipe(${sIdx})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+
+                            <div class="bg-slate-900/50 p-3 rounded-xl space-y-1">
+                                <div class="text-xs font-bold text-slate-400 mb-1">Ingredients:</div>
+                                ${itemsHtml}
+                                <div class="pt-2 flex gap-2">
+                                    <select id="add-ing-select-${sIdx}" class="bg-slate-800 text-xs text-white border border-slate-700 rounded p-1.5 flex-grow">
+                                        ${ingredients.map(i => `<option value="${i.name}">${i.name}</option>`).join('')}
+                                    </select>
+                                    <input type="number" id="add-ing-qty-${sIdx}" placeholder="g/ml" class="bg-slate-800 text-xs text-white border border-slate-700 rounded p-1.5 w-16 text-center">
+                                    <button onclick="addSubItem(${sIdx})" class="bg-amber-500 text-slate-900 px-2.5 rounded font-bold text-xs"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-2 border-t border-slate-700 text-xs">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[10px] text-slate-400">Final Wt (g)</label>
+                                    <input type="number" value="${sub.bakedWeight || ''}" placeholder="${rawWt}g raw" onchange="updateSubWeight(${sIdx}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded p-1 text-white font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-slate-400">Pieces</label>
+                                    <input type="number" value="${sub.pieces || 1}" onchange="updateSubPieces(${sIdx}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded p-1 text-white font-bold">
+                                </div>
+                            </div>
+                            <div class="flex justify-between bg-emerald-950/40 border border-emerald-800/50 p-2 rounded-xl text-emerald-300 font-bold">
+                                <span>Cal / 100g: ${cal100Final.toFixed(1)}</span>
+                                <span>1 Piece: ${calPerPiece.toFixed(1)} kcal</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addSubRecipeModal() {
+            document.getElementById('sub-name-input').value = '';
+            document.getElementById('sub-baked-input').value = '';
+            document.getElementById('sub-pieces-input').value = '1';
+            document.getElementById('modal-sub').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function saveSubRecipeHeader() {
+            const name = document.getElementById('sub-name-input').value.trim();
+            const section = document.getElementById('sub-section-input').value;
+            const baked = parseFloat(document.getElementById('sub-baked-input').value) || 0;
+            const pieces = parseInt(document.getElementById('sub-pieces-input').value) || 1;
+
+            if(!name) { alert("Please enter sub-recipe name"); return; }
+            subRecipes.push({ name, section, bakedWeight: baked, pieces, items: [] });
+            closeModal('modal-sub');
+            saveData();
+        }
+
+        function addSubItem(sIdx) {
+            const select = document.getElementById(`add-ing-select-${sIdx}`);
+            const qtyInput = document.getElementById(`add-ing-qty-${sIdx}`);
+            const qty = parseFloat(qtyInput.value);
+            if(!qty || qty <= 0) { alert("Enter valid quantity"); return; }
+            subRecipes[sIdx].items.push({ ingredient: select.value, qty });
+            saveData();
+        }
+
+        function deleteSubItem(sIdx, iIdx) {
+            subRecipes[sIdx].items.splice(iIdx, 1);
+            saveData();
+        }
+
+        function updateSubWeight(sIdx, val) {
+            subRecipes[sIdx].bakedWeight = parseFloat(val) || 0;
+            saveData();
+        }
+
+        function updateSubPieces(sIdx, val) {
+            subRecipes[sIdx].pieces = parseInt(val) || 1;
+            saveData();
+        }
+
+        function deleteSubRecipe(sIdx) {
+            subRecipes.splice(sIdx, 1);
+            saveData();
+        }
+
+        function renderFinalMenu() {
+            const container = document.getElementById('finalmenu-container');
+            container.innerHTML = '';
+
+            finalMenus.forEach((menu, mIdx) => {
+                let totalWt = 0, totalCal = 0;
+                let itemsHtml = '';
+                menu.items.forEach((item, iIdx) => {
+                    totalWt += item.qty;
+                    let cal100 = 0;
+                    if(item.type === 'Sub-Recipe') {
+                        const sub = subRecipes.find(s => s.name === item.name);
+                        if(sub) {
+                            let rw = 0, rc = 0;
+                            sub.items.forEach(si => {
+                                rw += si.qty;
+                                const ing = ingredients.find(ig => ig.name === si.ingredient);
+                                rc += (si.qty / 100) * (ing ? ing.cal : 0);
+                            });
+                            let fw = sub.bakedWeight > 0 ? sub.bakedWeight : rw;
+                            cal100 = fw > 0 ? (rc / fw) * 100 : 0;
+                        }
+                    } else {
+                        const ing = ingredients.find(ig => ig.name === item.name);
+                        cal100 = ing ? ing.cal : 0;
+                    }
+                    totalCal += (item.qty / 100) * cal100;
+
+                    itemsHtml += `
+                        <div class="flex justify-between items-center text-xs py-1 border-b border-slate-700/50">
+                            <div>
+                                <span class="text-slate-300 font-medium">${item.name}</span>
+                                <span class="text-[10px] text-slate-500 ml-1">(${item.type})</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-amber-400 font-bold">${item.qty}g</span>
+                                <button onclick="deleteFinalItem(${mIdx}, ${iIdx})" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 shadow-xl flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">${menu.section}</span>
+                                    <h3 class="text-base font-bold text-white mt-1">${menu.name}</h3>
+                                </div>
+                                <button onclick="deleteFinalMenu(${mIdx})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+
+                            <div class="bg-slate-900/50 p-3 rounded-xl space-y-1">
+                                <div class="text-xs font-bold text-slate-400 mb-1">Recipe Components:</div>
+                                ${itemsHtml}
+                                <div class="pt-2 grid grid-cols-2 gap-2">
+                                    <select id="fin-type-${mIdx}" class="bg-slate-800 text-[11px] text-white border border-slate-700 rounded p-1.5" onchange="toggleFinSource(${mIdx})">
+                                        <option value="Sub-Recipe">Sub-Recipe</option>
+                                        <option value="Ingredient">Ingredient</option>
+                                    </select>
+                                    <select id="fin-source-${mIdx}" class="bg-slate-800 text-[11px] text-white border border-slate-700 rounded p-1.5">
+                                        ${subRecipes.map(s => `<option value="${s.name}">${s.name}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="pt-1 flex gap-2">
+                                    <input type="number" id="fin-qty-${mIdx}" placeholder="Weight in g" class="bg-slate-800 text-xs text-white border border-slate-700 rounded p-1.5 flex-grow text-center">
+                                    <button onclick="addFinalItem(${mIdx})" class="bg-amber-500 text-slate-900 px-3 rounded font-bold text-xs"><i class="fa-solid fa-plus mr-1"></i> Add</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-950/40 border border-emerald-800/50 p-3 rounded-xl flex justify-between items-center text-xs text-emerald-300 font-bold">
+                            <div>Total Wt: ${totalWt.toFixed(1)}g</div>
+                            <div class="text-right">
+                                <div class="text-sm font-black text-amber-400">${totalCal.toFixed(1)} kcal</div>
+                                <div class="text-[10px] text-slate-400">Per 1 Serving/Piece</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleFinSource(mIdx) {
+            const type = document.getElementById(`fin-type-${mIdx}`).value;
+            const sourceSelect = document.getElementById(`fin-source-${mIdx}`);
+            sourceSelect.innerHTML = type === 'Sub-Recipe' 
+                ? subRecipes.map(s => `<option value="${s.name}">${s.name}</option>`).join('')
+                : ingredients.map(i => `<option value="${i.name}">${i.name}</option>`).join('');
+        }
+
+        function addFinalMenuModal() {
+            const name = prompt("Enter Final Menu Item Name:");
+            if(!name) return;
+            const section = prompt("Enter Section (Bakery / Pastry / Breakfast):", "Bakery");
+            finalMenus.push({ name, section: section || "Bakery", items: [] });
+            saveData();
+        }
+
+        function addFinalItem(mIdx) {
+            const type = document.getElementById(`fin-type-${mIdx}`).value;
+            const name = document.getElementById(`fin-source-${mIdx}`).value;
+            const qty = parseFloat(document.getElementById(`fin-qty-${mIdx}`).value);
+            if(!qty || qty <= 0) { alert("Enter valid weight"); return; }
+            finalMenus[mIdx].items.push({ type, name, qty });
+            saveData();
+        }
+
+        function deleteFinalItem(mIdx, iIdx) {
+            finalMenus[mIdx].items.splice(iIdx, 1);
+            saveData();
+        }
+
+        function deleteFinalMenu(mIdx) {
+            finalMenus.splice(mIdx, 1);
+            saveData();
+        }
+
+        function renderA4Report() {
+            document.getElementById('report-date').innerText = new Date().toLocaleDateString();
+            const tbody = document.getElementById('a4-table-body');
+            tbody.innerHTML = '';
+
+            finalMenus.forEach(menu => {
+                let totalWt = 0, totalCal = 0;
+                menu.items.forEach(item => {
+                    totalWt += item.qty;
+                    let cal100 = 0;
+                    if(item.type === 'Sub-Recipe') {
+                        const sub = subRecipes.find(s => s.name === item.name);
+                        if(sub) {
+                            let rw = 0, rc = 0;
+                            sub.items.forEach(si => {
+                                rw += si.qty;
+                                const ing = ingredients.find(ig => ig.name === si.ingredient);
+                                rc += (si.qty / 100) * (ing ? ing.cal : 0);
+                            });
+                            let fw = sub.bakedWeight > 0 ? sub.bakedWeight : rw;
+                            cal100 = fw > 0 ? (rc / fw) * 100 : 0;
+                        }
+                    } else {
+                        const ing = ingredients.find(ig => ig.name === item.name);
+                        cal100 = ing ? ing.cal : 0;
+                    }
+                    totalCal += (item.qty / 100) * cal100;
+                });
+                const cal100Final = totalWt > 0 ? (totalCal / totalWt) * 100 : 0;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-2 border border-slate-300 font-bold">${menu.name}</td>
+                        <td class="p-2 border border-slate-300">${menu.section}</td>
+                        <td class="p-2 border border-slate-300 text-right">${totalWt.toFixed(1)}g</td>
+                        <td class="p-2 border border-slate-300 text-right">${cal100Final.toFixed(1)}</td>
+                        <td class="p-2 border border-slate-300 text-right font-bold text-amber-600">${totalCal.toFixed(1)} kcal</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function exportJSON() {
+            const data = { ingredients, subRecipes, finalMenus };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dessert-rebels-kitchen-backup.json';
+            a.click();
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(data.ingredients) ingredients = data.ingredients;
+                    if(data.subRecipes) subRecipes = data.subRecipes;
+                    if(data.finalMenus) finalMenus = data.finalMenus;
+                    saveData();
+                    alert("Data Restored Successfully!");
+                } catch(err) {
+                    alert("Invalid JSON file");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function renderAll() {
+            renderIngredients();
+            renderSubRecipes();
+            renderFinalMenu();
+            renderA4Report();
+        }
+
+        renderAll();
+    </script>
+</body>
+</html>
